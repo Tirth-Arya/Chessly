@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Pygame / game assets
+assets/pieces/*.png
+*.exe
+*.app
+
+# Environment
+.env
+.venv
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Screenshots (keep only what you want in repo)
+screenshots/*.png
+!screenshots/menu.png
+!screenshots/gameplay.png

@@ -1,4 +1,8 @@
-pygame
-chess
-requests
-numpy
+pygame>=2.6.0
+chess>=1.10.0
+requests>=2.32.0
+numpy>=1.26.0
+
+How to use it:
+
+pip install -r requirements.txt

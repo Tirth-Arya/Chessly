@@ -8,52 +8,71 @@ import os
 import pygame
 
 # ====================== WINDOW & BOARD SETTINGS ======================
-BOARD_SIZE = 800                    # Board is always 800x800
-SIDE_PANEL_WIDTH = 340              # Extra space for timer, history, buttons
+BOARD_MARGIN = 32                   # Margin for coordinate labels (a-h, 1-8)
+SQUARE_SIZE = 88                    # Pixels per square
+BOARD_INNER = SQUARE_SIZE * 8       # Inner board area (704px)
+BOARD_SIZE = BOARD_INNER + 2 * BOARD_MARGIN  # Total board area with margins (768px)
+SIDE_PANEL_WIDTH = 360              # Extra space for timer, history, buttons
 WINDOW_WIDTH = BOARD_SIZE + SIDE_PANEL_WIDTH
 WINDOW_HEIGHT = BOARD_SIZE
 
-SQUARE_SIZE = BOARD_SIZE // 8       # 100px per square
-
-# ====================== THEMES (Modern & Beautiful) ======================
+# ====================== THEMES (Warm Wood) ======================
 THEMES = {
-    "light": {
-        "name": "Black & White",
-        "bg":           (245, 245, 245),
-        "light_square": (236, 236, 236),
-        "dark_square":  (32, 32, 32),
-        "panel_bg":     (250, 250, 250),
-        "panel_card":   (240, 240, 240),
-        "button_bg":    (235, 235, 235),
-        "button_border":(40, 40, 40),
-        "accent":       (20, 20, 20),
-        "text":         (20, 20, 20),
-        "muted_text":   (90, 90, 90),
-        "overlay":      (0, 0, 0),
-        "highlight":    (0, 0, 0, 70),
-        "last_move":    (0, 0, 0, 55),
-        "selected":     (0, 0, 0, 120)
+    "wood": {
+        "name": "Classic Wood",
+        "bg":             (62, 43, 30),        # Dark walnut background
+        "light_square":   (240, 217, 181),      # #F0D9B5 - cream/birch
+        "dark_square":    (181, 136, 99),        # #B58863 - warm brown oak
+        "board_border":   (42, 28, 18),          # Very dark walnut frame
+        "coord_text":     (210, 185, 150),       # Warm tan for coordinates
+        "coord_bg":       (52, 36, 24),          # Slightly lighter than border
+        "panel_bg":       (45, 32, 22),          # Dark walnut panel
+        "panel_card":     (62, 45, 32),          # Slightly lighter card
+        "button_bg":      (78, 56, 38),          # Warm brown button
+        "button_hover":   (95, 68, 45),          # Lighter brown hover
+        "button_border":  (140, 105, 70),        # Tan border
+        "accent":         (218, 175, 100),       # Warm gold accent
+        "accent_glow":    (255, 210, 130),       # Brighter gold for active
+        "text":           (235, 220, 198),       # Warm cream text
+        "muted_text":     (160, 138, 110),       # Muted tan
+        "overlay":        (20, 12, 6),           # Very dark overlay
+        "highlight":      (218, 175, 100, 100),  # Gold highlight for legal moves
+        "last_move":      (205, 170, 80, 80),    # Amber last-move highlight
+        "selected":       (255, 210, 80, 130),   # Bright gold selected
+        "check_tint":     (200, 50, 50, 90),     # Red tint for check
+        "move_dot":       (120, 90, 55, 160),    # Subtle brown dot for legal moves
+        "gradient_top":   (70, 50, 32),          # Panel gradient top
+        "gradient_bot":   (38, 26, 16),          # Panel gradient bottom
     },
-    "dark": {
-        "name": "Black & White (Dark)",
-        "bg":           (16, 16, 16),
-        "light_square": (210, 210, 210),
-        "dark_square":  (20, 20, 20),
-        "panel_bg":     (14, 14, 14),
-        "panel_card":   (24, 24, 24),
-        "button_bg":    (22, 22, 22),
-        "button_border":(200, 200, 200),
-        "accent":       (235, 235, 235),
-        "text":         (235, 235, 235),
-        "muted_text":   (170, 170, 170),
-        "overlay":      (0, 0, 0),
-        "highlight":    (255, 255, 255, 55),
-        "last_move":    (255, 255, 255, 45),
-        "selected":     (255, 255, 255, 95)
+    "wood_dark": {
+        "name": "Dark Mahogany",
+        "bg":             (30, 18, 10),
+        "light_square":   (212, 167, 106),       # #D4A76A - golden oak
+        "dark_square":    (107, 58, 42),          # #6B3A2A - dark mahogany
+        "board_border":   (22, 12, 6),
+        "coord_text":     (180, 150, 110),
+        "coord_bg":       (28, 16, 8),
+        "panel_bg":       (25, 15, 8),
+        "panel_card":     (40, 26, 16),
+        "button_bg":      (55, 36, 22),
+        "button_hover":   (72, 48, 30),
+        "button_border":  (120, 85, 50),
+        "accent":         (200, 160, 85),
+        "accent_glow":    (240, 195, 110),
+        "text":           (220, 200, 175),
+        "muted_text":     (140, 115, 85),
+        "overlay":        (10, 5, 2),
+        "highlight":      (200, 160, 85, 100),
+        "last_move":      (190, 150, 65, 80),
+        "selected":       (240, 195, 65, 130),
+        "check_tint":     (180, 40, 40, 90),
+        "move_dot":       (100, 75, 45, 160),
+        "gradient_top":   (40, 26, 14),
+        "gradient_bot":   (18, 10, 4),
     }
 }
 
-DEFAULT_THEME = "light"
+DEFAULT_THEME = "wood"
 
 # ====================== GAME MODES ======================
 TIME_MODES = {
@@ -69,11 +88,23 @@ STOCKFISH_PATH = os.path.join(BASE_DIR, "stockfish.exe" if os.name == "nt" else 
 
 # ====================== FONTS ======================
 pygame.font.init()
-TITLE_FONT = pygame.font.SysFont("Arial", 68, bold=True)
-BIG_FONT = pygame.font.SysFont("Arial", 42, bold=True)
-TEXT_FONT = pygame.font.SysFont("Arial", 28)
-SMALL_FONT = pygame.font.SysFont("Arial", 20)
-PIECE_FONT = pygame.font.SysFont("Segoe UI Symbol", 72)   # Unicode fallback
+
+# Try premium fonts, fall back gracefully
+def _load_font(names, size, bold=False):
+    """Try multiple font names, return first available."""
+    for name in names:
+        font = pygame.font.SysFont(name, size, bold=bold)
+        if font:
+            return font
+    return pygame.font.SysFont(None, size, bold=bold)
+
+TITLE_FONT   = _load_font(["Georgia", "Palatino", "Times New Roman", "Arial"], 62, bold=True)
+BIG_FONT      = _load_font(["Georgia", "Palatino", "Arial"], 38, bold=True)
+TEXT_FONT     = _load_font(["Segoe UI", "Calibri", "Arial"], 26)
+SMALL_FONT    = _load_font(["Segoe UI", "Calibri", "Arial"], 19)
+COORD_FONT    = _load_font(["Segoe UI", "Calibri", "Arial"], 15, bold=True)
+PIECE_FONT    = pygame.font.SysFont("Segoe UI Symbol", 66)   # Unicode fallback
+HISTORY_FONT  = _load_font(["Consolas", "Courier New", "monospace"], 18)
 
 # ====================== SOUND FREQUENCIES (generated) ======================
 SOUND_CONFIG = {

@@ -10,7 +10,8 @@ import time
 import chess
 from settings import (
     WINDOW_WIDTH, WINDOW_HEIGHT, FPS, TIME_MODES,
-    BOARD_SIZE, SQUARE_SIZE, SOUND_CONFIG, SOUND_MASTER_VOLUME
+    BOARD_SIZE, BOARD_INNER, BOARD_MARGIN, SQUARE_SIZE,
+    SOUND_CONFIG, SOUND_MASTER_VOLUME
 )
 from board import ChessBoard
 from ui import ChessUI
@@ -130,6 +131,10 @@ class ChesslyGame:
         if pos[0] >= BOARD_SIZE:  # Clicked side panel
             self.handle_side_panel_click(pos)
             return
+        # Ignore clicks in the coordinate margin area
+        if (pos[0] < BOARD_MARGIN or pos[0] >= BOARD_MARGIN + BOARD_INNER or
+            pos[1] < BOARD_MARGIN or pos[1] >= BOARD_MARGIN + BOARD_INNER):
+            return
 
         square = self._get_square_from_pos(pos)
         if square is None:
@@ -201,12 +206,15 @@ class ChesslyGame:
             self.sounds["move"].play()
 
     def _get_square_from_pos(self, pos):
-        """Convert mouse position to chess square."""
+        """Convert mouse position to chess square (accounting for board margin)."""
         x, y = pos
-        if x >= BOARD_SIZE:
+        # Subtract margin offset
+        bx = x - BOARD_MARGIN
+        by = y - BOARD_MARGIN
+        if bx < 0 or bx >= BOARD_INNER or by < 0 or by >= BOARD_INNER:
             return None
-        col = x // SQUARE_SIZE
-        row = (7 - (y // SQUARE_SIZE)) if not self.ui.flipped else (y // SQUARE_SIZE)
+        col = bx // SQUARE_SIZE
+        row = (7 - (by // SQUARE_SIZE)) if not self.ui.flipped else (by // SQUARE_SIZE)
         return chess.square(col, row)
 
     def update_timer(self):

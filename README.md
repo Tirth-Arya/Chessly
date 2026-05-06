@@ -1,5 +1,5 @@
 # ♟️ Chessly - Professional Chess Game
-
+![alt text](Tirth-Arya.png)
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
 [![Pygame](https://img.shields.io/badge/Pygame-2.6.0-%2312b3b3)](https://www.pygame.org/)

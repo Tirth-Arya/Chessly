@@ -1,0 +1,7 @@
+# Force GitHub to recognize this as a Python project
+*.py linguist-language=Python
+*.py linguist-detectable=true
+
+# Ignore binary files for language stats
+stockfish* linguist-vendored
+*.exe linguist-vendored

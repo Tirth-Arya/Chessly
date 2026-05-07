@@ -8,17 +8,17 @@ build/
 dist/
 *.egg-info/
 
-# Pygame / game assets - Do NOT commit downloaded pieces
+# Game assets
 assets/pieces/*.png
 
-# Screenshots - Ignore everything except the ones we want to show
+# Screenshots - Only allow specific ones
 screenshots/*.png
 !screenshots/menu.png
 !screenshots/gameplay.png
 !screenshots/dark-theme.png
 !screenshots/ai-play.png
 
-# Stockfish binary - Important to exclude so GitHub shows Python language
+# Stockfish binary - CRITICAL to exclude
 stockfish*
 stockfish.exe
 *.exe
@@ -35,9 +35,7 @@ venv/
 *.swp
 *.swo
 
-# Logs
+# Logs / OS
 *.log
-
-# OS
 .DS_Store
 Thumbs.db
